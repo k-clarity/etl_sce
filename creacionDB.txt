@@ -1,0 +1,187 @@
+-- SEQUENCE: public.alarmas_aws_id_seq
+
+-- DROP SEQUENCE IF EXISTS public.alarmas_aws_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS public.alarmas_aws_id_seq
+    INCREMENT 1
+    START 109
+    MINVALUE 1
+    MAXVALUE 100000000000
+    CACHE 1;
+
+ALTER SEQUENCE public.alarmas_aws_id_seq
+    OWNER TO postgres;
+
+-- SEQUENCE: public.alarmas_id_seq
+
+-- DROP SEQUENCE IF EXISTS public.alarmas_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS public.alarmas_id_seq
+    INCREMENT 1
+    START 67
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.alarmas_id_seq
+    OWNER TO postgres;
+
+-- SEQUENCE: public.fallos_id_seq
+
+-- DROP SEQUENCE IF EXISTS public.fallos_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS public.fallos_id_seq
+    INCREMENT 1
+    START 4172
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.fallos_id_seq
+    OWNER TO postgres;
+
+-- SEQUENCE: public.mce_data_id_seq
+
+-- DROP SEQUENCE IF EXISTS public.mce_data_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS public.mce_data_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.mce_data_id_seq
+    OWNER TO postgres;
+
+-- SEQUENCE: public.n_alarma_k_alarma_id_seq
+
+-- DROP SEQUENCE IF EXISTS public.n_alarma_k_alarma_id_seq;
+
+CREATE SEQUENCE IF NOT EXISTS public.n_alarma_k_alarma_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.n_alarma_k_alarma_id_seq
+    OWNER TO postgres;
+
+
+
+-- Table: public.alarmas
+
+-- DROP TABLE IF EXISTS public.alarmas;
+
+CREATE TABLE IF NOT EXISTS public.alarmas
+(
+    id integer NOT NULL DEFAULT 'nextval('alarmas_id_seq'::regclass)',
+    nivel integer,
+    fecha timestamp without time zone,
+    estado_nivel_3 integer,
+    estado_nivel_2 integer,
+    sensor text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.alarmas
+    OWNER to postgres;
+
+-- Table: public.alarmas_aws
+
+-- DROP TABLE IF EXISTS public.alarmas_aws;
+
+CREATE TABLE IF NOT EXISTS public.alarmas_aws
+(
+    id integer NOT NULL DEFAULT 'nextval('alarmas_aws_id_seq'::regclass)',
+    nivel integer,
+    fecha timestamp without time zone,
+    sensor text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.alarmas_aws
+    OWNER to postgres;
+
+-- Table: public.electric_field_mean
+
+-- DROP TABLE IF EXISTS public.electric_field_mean;
+
+CREATE TABLE IF NOT EXISTS public.electric_field_mean
+(
+    mce text COLLATE pg_catalog."default",
+    fecha timestamp without time zone,
+    maximo double precision,
+    ce double precision
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.electric_field_mean
+    OWNER to postgres;
+
+-- Table: public.fallos
+
+-- DROP TABLE IF EXISTS public.fallos;
+
+CREATE TABLE IF NOT EXISTS public.fallos
+(
+    id bigint NOT NULL DEFAULT 'nextval('fallos_id_seq'::regclass)',
+    fallo text COLLATE pg_catalog."default",
+    script text COLLATE pg_catalog."default",
+    fecha timestamp without time zone
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.fallos
+    OWNER to postgres;
+
+-- Table: public.mce_data
+
+-- DROP TABLE IF EXISTS public.mce_data;
+
+CREATE TABLE IF NOT EXISTS public.mce_data
+(
+    id integer NOT NULL DEFAULT 'nextval('mce_data_id_seq'::regclass)',
+    fecha_act timestamp without time zone,
+    latitud double precision,
+    longitud double precision,
+    nombre text COLLATE pg_catalog."default",
+    tabla_prom text COLLATE pg_catalog."default",
+    k_ajuste double precision,
+    k_calibracion double precision,
+    server text COLLATE pg_catalog."default",
+    port text COLLATE pg_catalog."default",
+    password text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.mce_data
+    OWNER to postgres;
+
+
+-- Table: public.n_alarma_k_alarma
+
+-- DROP TABLE IF EXISTS public.n_alarma_k_alarma;
+
+CREATE TABLE IF NOT EXISTS public.n_alarma_k_alarma
+(
+    id integer NOT NULL DEFAULT 'nextval('n_alarma_k_alarma_id_seq'::regclass)',
+    nivel1 integer,
+    nivel2 integer,
+    constante_sitio double precision,
+    constante_ajuste double precision,
+    tiempoapagado integer,
+    fecha timestamp without time zone
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.n_alarma_k_alarma
+    OWNER to postgres;
+
