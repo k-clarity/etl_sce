@@ -1,5 +1,6 @@
-import psycopg2,json 
-with open("C:\scripts\sce\credenciales.json") as archivo_credenciales:
+import psycopg2
+import json 
+with open("./config/etl-sce-db-connection.json") as archivo_credenciales:
     credenciales = json.load(archivo_credenciales)
 try:
     conexion = psycopg2.connect(**credenciales)
