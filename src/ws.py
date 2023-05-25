@@ -1,20 +1,26 @@
-import psycopg2,datetime,json,os,requests,ssl,http.client,time
-from bd import conexion
+import psycopg2,datetime,json,os
+from icecream import ic
+from utils import read_json, connection
 
-def ultimo_fecha():
-   try:
-      curFecha = conexion.cursor()
-      sqlFecha = "SELECT MAX(fecha) FROM electric_field_mean"
-      curFecha.execute(sqlFecha,())
-      conexion.commit()
-      datosFecha = curFecha.fetchall()
-      for row in datosFecha:
-            fecha = row[0]
-      fecha = str(fecha)
-      curFecha.close()
-      return fecha
-   except Exception as e:
-     print('Error al encontrar la ultima fecha: '+str(e))
+def ultimo_fecha(args):
+    credenciales:object = read_json(config=args.dbconection)
+    try:
+        conexion = connection(credenciales)
+    except:
+        ic ("No hay conexión con ola base de datos")
+    try:
+        curFecha = conexion.cursor()
+        sqlFecha: str = f"SELECT MAX(fecha) FROM {credenciales['table_name']}"
+        curFecha.execute(query=sqlFecha,vars=())
+        conexion.commit()
+        datosFecha: list[tuple[json, ...]] = curFecha.fetchall()
+        for row in datosFecha:
+                fecha = row[0]
+        fecha = str(object=fecha)
+        curFecha.close()
+        return fecha
+    except Exception as e:
+        print('Error al encontrar la ultima fecha: '+str(e))
          
 def sendValues(inf):
      
@@ -81,9 +87,9 @@ def compara_fecha(fecha):
      fechaIngFallo = datetime.datetime.now() - datetime.timedelta(hours = 5)
      dataFallo = str(e)
      sqlInsFallo = 'INSERT INTO fallos(fallo,script,fecha) VALUES (%s,%s,%s)'
-     cursorFallo = conexion.cursor()
-     cursorFallo.execute(sqlInsFallo, (dataFallo,'Compara_Fecha',fechaIngFallo))
-     conexion.commit()
-     cursorFallo.close()
+    #  cursorFallo = conexion.cursor()
+    #  cursorFallo.execute(sqlInsFallo, (dataFallo,'Compara_Fecha',fechaIngFallo))
+    #  conexion.commit()
+    #  cursorFallo.close()
 
 
