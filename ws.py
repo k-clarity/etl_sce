@@ -1,7 +1,7 @@
 import psycopg2,datetime,json,os,requests,ssl,http.client,time
 from bd import conexion
-try:
- def ultimo_fecha():
+
+def ultimo_fecha():
    try:
       curFecha = conexion.cursor()
       sqlFecha = "SELECT MAX(fecha) FROM electric_field_mean"
@@ -14,15 +14,9 @@ try:
       curFecha.close()
       return fecha
    except Exception as e:
-     print('Error: '+str(e))
-     fechaIngFallo = datetime.datetime.now() - datetime.timedelta(hours = 5)
-     dataFallo = str(e)
-     sqlInsFallo = 'INSERT INTO fallos(fallo,script,fecha) VALUES (%s,%s,%s)'
-     cursorFallo = conexion.cursor()
-     cursorFallo.execute(sqlInsFallo, (dataFallo,'Ultimo_fecha',fechaIngFallo))
-     conexion.commit()
-     cursorFallo.close()      
- def sendValues(inf):
+     print('Error al encontrar la ultima fecha: '+str(e))
+         
+def sendValues(inf):
      
      print(inf)
     # headers={ 'content-type': "application/json",
@@ -46,7 +40,7 @@ try:
     #     cursorFallo.close()
     # finally:
     #     connection.close()
- def compara_fecha(fecha):
+def compara_fecha(fecha):
    try:
       
       isempty = os.stat('./fecha_ult.json').st_size == 0
@@ -92,12 +86,4 @@ try:
      conexion.commit()
      cursorFallo.close()
 
-except Exception as e:
-    print('Error: '+str(e))
-    fechaIngError = datetime.datetime.now() - datetime.timedelta(hours = 5)
-    sqlInsError = 'INSERT INTO fallos(fallo,script,fecha) VALUES (%s,%s,%s)'
-    cursorError = conexion.cursor()
-    cursorError.execute(sqlInsError, (str(e),'WS',fechaIngError))
-    conexion.commit()
-    cursorError.close()
-    conexion.close()
+
