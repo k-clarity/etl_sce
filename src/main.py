@@ -10,8 +10,12 @@ TOKEN_RENEW = 0
 
 def main() -> None:
     args = parse_args()
-    fecha: str | None= ultimo_fecha(args=args)
-    compara_fecha(fecha)
+    fecha: str = ultimo_fecha(args=args)
+    
+    if (fecha == ""):
+        sys.exit("no se encontró registro del último dato enviado")
+
+    compara_fecha(fecha=fecha)
 
 if __name__ == '__main__':
 

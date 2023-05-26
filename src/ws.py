@@ -18,7 +18,7 @@ def ultimo_fecha(args) -> str:
         return fecha
     except Exception as e:
         print('Error al encontrar la ultima fecha: '+str(e))
-        sys.exit(1)
+        return ""
          
 def sendValues(inf):
      
