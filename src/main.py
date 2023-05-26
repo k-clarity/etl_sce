@@ -10,10 +10,7 @@ TOKEN_RENEW = 0
 
 def main() -> None:
     args = parse_args()
-    fecha: str | None= ultimo_fecha(args)
-    if (fecha == None):
-        ic("No es posible leer la bbase de datos")
-        sys.exit(__status=1)
+    fecha: str | None= ultimo_fecha(args=args)
     compara_fecha(fecha)
 
 if __name__ == '__main__':

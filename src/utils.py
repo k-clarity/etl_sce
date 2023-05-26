@@ -1,10 +1,14 @@
-import json, argparse, psycopg2
+import json, argparse, psycopg2, os
 
 def read_json(config) -> object:
     with open(file=config) as archivo_credenciales:
         credenciales: object = json.load(archivo_credenciales)
     return credenciales
 
+def read_files(file):
+    with open(os.path.join("./fecha_ult.json"), 'w') as file:
+            dt = json.dump(data, file)
+            return dt
 def parse_args():
     parser = argparse.ArgumentParser(description="SCE runnig file")
     parser._action_groups.pop()

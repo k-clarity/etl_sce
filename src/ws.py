@@ -1,8 +1,8 @@
-import psycopg2,datetime,json,os
+import datetime, json, os, sys
 from icecream import ic
 from utils import read_json, connection
 
-def ultimo_fecha(args):
+def ultimo_fecha(args) -> str:
     credenciales:object = read_json(config=args.dbconection)
     try:
         conexion = connection(credenciales)
@@ -13,14 +13,12 @@ def ultimo_fecha(args):
         sqlFecha: str = f"SELECT MAX(fecha) FROM {credenciales['table_name']}"
         curFecha.execute(query=sqlFecha,vars=())
         conexion.commit()
-        datosFecha: list[tuple[json, ...]] = curFecha.fetchall()
-        for row in datosFecha:
-                fecha = row[0]
-        fecha = str(object=fecha)
+        fecha: str = curFecha.fetchall()[0][0]
         curFecha.close()
         return fecha
     except Exception as e:
         print('Error al encontrar la ultima fecha: '+str(e))
+        sys.exit(1)
          
 def sendValues(inf):
      
@@ -55,7 +53,7 @@ def compara_fecha(fecha):
         data = {}
         data['fecha'] = fecha      
         with open(os.path.join("./fecha_ult.json"), 'w') as file:
-            json.dump(data, file)
+            dt = json.dump(data, file)
         file.close()
       else:
         dataEnv = []
