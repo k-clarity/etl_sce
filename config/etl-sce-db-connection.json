@@ -4,5 +4,6 @@
     "password": "postgres",
     "host": "localhost",
     "port": "5432",
-    "table_name": "electric_field_mean"
+    "sensor_table_name": "electric_field_mean",
+    "procesed_table_name": "readed_files"
 }

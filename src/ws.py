@@ -1,8 +1,10 @@
+from ast import arg
 import datetime, json, os, sys
 from icecream import ic
+from numpy import arange
 from utils import read_json, connection
 
-def ultimo_fecha(args) -> str:
+def last_date_sensor(args:object) -> str:
     credenciales:object = read_json(config=args.dbconection)
     try:
         conexion = connection(credenciales)
@@ -10,7 +12,25 @@ def ultimo_fecha(args) -> str:
         ic ("No hay conexión con ola base de datos")
     try:
         curFecha = conexion.cursor()
-        sqlFecha: str = f"SELECT MAX(fecha) FROM {credenciales['table_name']}"
+        sqlFecha: str = f"SELECT MAX(fecha) FROM {credenciales['sensor_table_name']}"
+        curFecha.execute(query=sqlFecha,vars=())
+        conexion.commit()
+        fecha: str = curFecha.fetchall()[0][0]
+        curFecha.close()
+        return fecha
+    except Exception as e:
+        print('Error al encontrar la ultima fecha: '+str(e))
+        return ""
+    
+def last_procesed_date(args) -> str:
+    credenciales:object = read_json(config=args.dbconection)
+    try:
+        conexion = connection(credenciales)
+    except:
+        ic ("No hay conexión con ola base de datos")
+    try:
+        curFecha = conexion.cursor()
+        sqlFecha: str = f"SELECT MAX(fecha) FROM {credenciales['procesed_table_name']}"
         curFecha.execute(query=sqlFecha,vars=())
         conexion.commit()
         fecha: str = curFecha.fetchall()[0][0]
@@ -44,7 +64,11 @@ def sendValues(inf):
     #     cursorFallo.close()
     # finally:
     #     connection.close()
-def compara_fecha(fecha):
+def compare_dates(sensor_date:str, readed_date:str, args:object):
+   if (sensor_date != readed_date):
+       credenciales:object = read_json(config=args.dbconection)
+    try:
+        conexion = connection(credenciales)
    try:
       
       isempty = os.stat('./fecha_ult.json').st_size == 0
