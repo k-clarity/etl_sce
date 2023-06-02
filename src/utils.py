@@ -10,7 +10,7 @@ def read_files(file):
             dt = json.dump(data, file)
             return dt
 def parse_args():
-    parser = argparse.ArgumentParser(description="SCE runnig file")
+    parser = argparse.ArgumentParser(description="SCE running file")
     parser._action_groups.pop()
     required = parser.add_argument_group('required arguments')
     required.add_argument('--db-connection', dest="dbconection", help="path to configuration file", required=True)

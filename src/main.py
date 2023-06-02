@@ -1,8 +1,8 @@
 import os, sys
-from icecream import ic
+#from icecream import ic
 
-from utils import parse_args
-from ws import last_procesed_date, last_date_sensor, compare_dates
+from utils import parse_args, read_json
+from ws import last_date_sensor, compare_dates, sendValues
 
 GLM_PATH: str | None = os.getenv(key="GLM_PATH")
 
@@ -10,13 +10,15 @@ TOKEN_RENEW = 0
 
 def main() -> None:
     args = parse_args()
-    sensor_date: str = last_date_sensor(args=args)
-    readed_date: str = last_procesed_date(args=args)
+    credenciales:object = read_json(config=args.dbconection)
+    sensor_date: str = last_date_sensor(args=credenciales, table_name=credenciales['sensor_table_name'])
+    readed_date: str = last_date_sensor(args=credenciales, table_name=credenciales['procesed_table_name'])
 
-    if (fecha_sensor == ""):
+    if (sensor_date == ""):
         sys.exit("no se encontró registro del último dato enviado")
     
-    compare_dates(sensor_date=sensor_date, readed_date=readed_date, args=args)
+    data = compare_dates(sensor_date=sensor_date, readed_date=readed_date, args=args)
+    sendValues(data, args=credenciales)
 
 if __name__ == '__main__':
 
