@@ -1,8 +1,9 @@
 from ast import arg
 import datetime, json, os, sys
 #from icecream import ic
-#from numpy import arange, datetime64
+from numpy import arange
 from utils import read_json, connection
+import numpy as np
 
 def last_date_sensor(args:object, table_name) -> str:
     
@@ -10,7 +11,8 @@ def last_date_sensor(args:object, table_name) -> str:
     try:
         conexion = connection(args)
     except:
-        ic ("No hay conexión con ola base de datos")
+        
+        print ("No hay conexión con ola base de datos")
     try:
         curFecha = conexion.cursor()
         sqlFecha: str = f"SELECT MAX(fecha) FROM {args['sensor_table_name']}"
@@ -18,6 +20,7 @@ def last_date_sensor(args:object, table_name) -> str:
         conexion.commit()
         fecha: str = curFecha.fetchall()[0][0]
         curFecha.close()
+        print (fecha)
         return fecha
     except Exception as e:
         print('Error al encontrar la ultima fecha: '+str(e))
@@ -31,9 +34,12 @@ def sendValues(inf, args:object):
         conexion = connection(args)
      except:
         ic ("No hay conexión con ola base de datos")
-     last_date = inf[-1]
+     last_date = inf[-1][0]
+     last_date.strftime("%Y/%m/%d %H:%M:%S")
+     print (last_date)
      curDateLast = conexion.cursor()
-     sqlFecha: str = "INSERT INTO {args['readed_files']} (date) VALUES %s;" 
+     sqlFecha: str = "INSERT INTO "+args['procesed_table_name']+" (date) VALUES (%s);" 
+     print (f"{sqlFecha}{last_date}")
      curDateLast.execute(sqlFecha, (last_date,))
      conexion.commit()
     # headers={ 'content-type': "application/json",
@@ -66,15 +72,16 @@ def compare_dates(sensor_date:str, readed_date:str, args:object):
         except:
             ic("no se pudo establecer conexión con la base de datos")
         try:
-            sensor_date = datetime64(sensor_date)
-            readed_date = datetime64(readed_date)
-
+            
+            sensor_date = np.datetime64(sensor_date)
+            readed_date = np.datetime64(readed_date)
+        
             curMCE = conexion.cursor()
             sqlMCE = "SELECT fecha,maximo,ce from electric_field_mean where fecha > %s"
             if (sensor_date < readed_date):
-                curMCE.execute(sqlMCE,(sensor_date,))
-            else: 
-                curMCE.execute(sqlMCE,(readed_date,))
+                curMCE.execute(sqlMCE,(str(sensor_date),))
+            else:
+                curMCE.execute(sqlMCE,(str(readed_date),))
             conexion.commit()
             datosMCE = curMCE.fetchall()
             curMCE.close()
